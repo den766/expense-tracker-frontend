@@ -4,11 +4,7 @@ import AddExpenseForm from "./components/addexpesneform";
 import MonthlySummary from "./components/monthlysummary";
 import ExpenseList from "./components/expenselist";
 import { ValidateExpense, formatTitle } from "./utils/validation";
-import {
-  saveExpenses,
-  saveMonthlyBudget,
-  loadMonthlyBudget,
-} from "./services/storage";
+import { saveMonthlyBudget, loadMonthlyBudget } from "./services/storage";
 import ExpenseSummary from "./components/expensesummary";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ExpesneLayoutDashboard from "./pages/expenselayout";
@@ -33,10 +29,6 @@ function App() {
   const [error, setError] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [monthlyBudget, setMonthlyBudget] = useState(() => loadMonthlyBudget());
-
-  useEffect(() => {
-    saveExpenses(expenses);
-  }, [expenses]);
 
   useEffect(() => {
     saveMonthlyBudget(monthlyBudget);

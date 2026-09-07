@@ -1,5 +1,8 @@
+const APIlink = "https://expense-tracker-backend-n3ce.onrender.com";
+
+
 export async function getExpenses() {
-  const response = await fetch("http://localhost:5000/expenses");
+  const response = await fetch(`${APIlink}/expenses`);
 
   const data = response.json();
 
@@ -7,7 +10,7 @@ export async function getExpenses() {
 }
 
 export async function createExpenses(expense) {
-  const request = await fetch("http://localhost:5000/expenses", {
+  const request = await fetch(`${APIlink}/expenses`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,7 +22,7 @@ export async function createExpenses(expense) {
 }
 
 export async function deleteExpenseBackEnd(id) {
-  const response = await fetch(`http://localhost:5000/expenses/${id}`, {
+  const response = await fetch(`${APIlink}/expenses/${id}`, {
     method: "DELETE",
   });
 
@@ -27,7 +30,7 @@ export async function deleteExpenseBackEnd(id) {
 }
 
 export async function updateExpenseBackend(id, editedExpenses) {
-  const response = await fetch(`http://localhost:5000/expenses/${id}`, {
+  const response = await fetch(`${APIlink}/expenses/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
