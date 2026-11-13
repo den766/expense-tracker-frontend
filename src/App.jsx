@@ -27,6 +27,7 @@ function App() {
   const [sortOrderValue, setSortOrderValue] = useState("none");
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
+  const [apiError, setApiError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [monthlyBudget, setMonthlyBudget] = useState(() => loadMonthlyBudget());
 
@@ -36,9 +37,21 @@ function App() {
 
   useEffect(() => {
     async function loadNewExpenses() {
-      const data = await getExpenses();
+
+      try {
+
+         const data = await getExpenses();
 
       setExpenses(data);
+      setApiError(null);
+        
+      } catch (error) {
+        
+
+        setApiError(error.message)
+        
+      }
+     
     }
 
     loadNewExpenses();
@@ -53,14 +66,14 @@ function App() {
       return false;
     }
 
-    const isDuplicate = expenses.some(
-      (expense) => expense.title.toLowerCase() === cleanTitle.toLowerCase(),
-    );
+    // const isDuplicate = expenses.some(
+    //   (expense) => expense.title.toLowerCase() === cleanTitle.toLowerCase(),
+    // );
 
-    if (isDuplicate) {
-      setError("Duplicate entries ,Try different Keyword");
-      return false;
-    }
+    // if (isDuplicate) {
+    //   setError("Duplicate entries ,Try different Keyword");
+    //   return false;
+    // }
 
     const newExpense = {
       title: cleanTitle,
@@ -258,7 +271,7 @@ function App() {
     <div className="container">
       <Routes>
         <Route path="/" element={<Navigate to="/expense-dashboard" />}></Route>
-        <Route path="/expense-dashboard" element={<ExpesneLayoutDashboard />}>
+        <Route path="/expense-dashboard" element={<ExpesneLayoutDashboard  apiError={apiError}/>}>
           <Route
             index
             element={

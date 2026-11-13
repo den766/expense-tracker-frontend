@@ -9,7 +9,6 @@ function AddExpenseForm({ onHandleForm, error }) {
       onSubmit={async (e) => {
         e.preventDefault();
         const success = await onHandleForm(title, amount, category);
-        console.log(success);
         if (success) {
           setTitle("");
           setAmount("");

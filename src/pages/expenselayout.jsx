@@ -8,7 +8,7 @@ import {
   ChartColumn,
 } from "lucide-react";
 
-function ExpesneLayoutDashboard() {
+function ExpesneLayoutDashboard({apiError}) {
   return (
     <div>
       <Header />
@@ -44,6 +44,8 @@ function ExpesneLayoutDashboard() {
           Reports
         </NavLink>
       </nav>
+
+      {apiError && <p className="error">{apiError}</p>}
       <Outlet />
       <Footer />
     </div>

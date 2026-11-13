@@ -37,7 +37,7 @@ function EditExpenseForm({
         value={editedAmount}
         onChange={(e) => {
           setEditedAmount(Number(e.target.value));
-          // console.log(typeof e.target.value);
+          
         }}
       ></input>
       <label htmlFor="category">Category:</label>
