@@ -1,6 +1,7 @@
 const APIlink = "https://expense-tracker-backend-n3ce.onrender.com";
 
 // const APITestLink = "http://localhost:5000";
+// console.log(APITestLink);
 
 export async function getExpenses() {
   const response = await fetch(`${APIlink}/api/expenses`);
@@ -15,7 +16,7 @@ export async function getExpenses() {
 }
 
 export async function createExpenses(expense) {
-  const request = await fetch(`${APIlink}/api/expenses`, {
+  const response = await fetch(`${APIlink}/api/expenses`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,7 +24,11 @@ export async function createExpenses(expense) {
     body: JSON.stringify(expense),
   });
 
-  return request.json();
+  if (!response.ok) {
+    throw new Error("Failed to create expense");
+  }
+
+  return await response.json();
 }
 
 export async function deleteExpenseBackEnd(id) {

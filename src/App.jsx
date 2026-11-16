@@ -37,59 +37,57 @@ function App() {
 
   useEffect(() => {
     async function loadNewExpenses() {
-
       try {
+        const data = await getExpenses();
 
-         const data = await getExpenses();
-
-      setExpenses(data);
-      setApiError(null);
-        
+        setExpenses(data);
+        setApiError(null);
       } catch (error) {
-        
-
-        setApiError(error.message)
-        
+        setApiError(error.message);
       }
-     
     }
 
     loadNewExpenses();
   }, []);
 
   async function HandleSubmit(title, amount, category) {
-    const cleanTitle = formatTitle(title);
-    const validationError = ValidateExpense(cleanTitle, amount, category);
+    try {
+      const cleanTitle = formatTitle(title);
+      const validationError = ValidateExpense(cleanTitle, amount, category);
 
-    if (validationError) {
-      setError(validationError);
+      if (validationError) {
+        setError(validationError);
+        return false;
+      }
+
+      // const isDuplicate = expenses.some(
+      //   (expense) => expense.title.toLowerCase() === cleanTitle.toLowerCase(),
+      // );
+
+      // if (isDuplicate) {
+      //   setError("Duplicate entries ,Try different Keyword");
+      //   return false;
+      // }
+
+      const newExpense = {
+        title: cleanTitle,
+        amount,
+        category,
+      };
+
+      setError("");
+      setApiError(null);
+
+      const createdExpense = await createExpenses(newExpense);
+      setExpenses((prev) => [...prev, createdExpense.newExpense]);
+
+      toast("Expense Added");
+
+      return true;
+    } catch (error) {
+      setApiError(error.message);
       return false;
     }
-
-    // const isDuplicate = expenses.some(
-    //   (expense) => expense.title.toLowerCase() === cleanTitle.toLowerCase(),
-    // );
-
-    // if (isDuplicate) {
-    //   setError("Duplicate entries ,Try different Keyword");
-    //   return false;
-    // }
-
-    const newExpense = {
-      title: cleanTitle,
-      amount,
-      category,
-      createdAt: new Date().toISOString(),
-    };
-
-    setError("");
-
-    const createdExpense = await createExpenses(newExpense);
-    setExpenses((prev) => [...prev, createdExpense.newExpense]);
-
-    toast("Expense Added");
-
-    return true;
   }
 
   async function HandleDeleteExpense(id) {
@@ -271,7 +269,10 @@ function App() {
     <div className="container">
       <Routes>
         <Route path="/" element={<Navigate to="/expense-dashboard" />}></Route>
-        <Route path="/expense-dashboard" element={<ExpesneLayoutDashboard  apiError={apiError}/>}>
+        <Route
+          path="/expense-dashboard"
+          element={<ExpesneLayoutDashboard apiError={apiError} />}
+        >
           <Route
             index
             element={
