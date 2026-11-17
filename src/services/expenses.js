@@ -36,7 +36,9 @@ export async function deleteExpenseBackEnd(id) {
     method: "DELETE",
   });
 
-  return response;
+   if (!response.ok) {
+    throw new Error("Failed to delete expense");
+  }
 }
 
 export async function updateExpenseBackend(id, editedExpenses) {
@@ -48,5 +50,9 @@ export async function updateExpenseBackend(id, editedExpenses) {
     body: JSON.stringify(editedExpenses),
   });
 
-  return response.json();
+   if (!response.ok) {
+    throw new Error("Failed to update expense");
+  }
+
+  return await response.json();
 }

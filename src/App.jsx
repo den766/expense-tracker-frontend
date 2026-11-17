@@ -91,10 +91,18 @@ function App() {
   }
 
   async function HandleDeleteExpense(id) {
-    await deleteExpenseBackEnd(id);
+    try {
+      setApiError(null);
 
-    setExpenses((prev) => prev.filter((expense) => expense.id !== id));
-    toast("Expense Deleted");
+      await deleteExpenseBackEnd(id);
+
+      setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+      toast("Expense Deleted");
+      return true;
+    } catch (error) {
+      setApiError(error.message);
+       return false;
+    }
   }
 
   function HandleEdit(id) {
@@ -107,42 +115,39 @@ function App() {
     editedAmount,
     editedCategory,
   ) {
-    const cleanTitle = formatTitle(editedTitle);
-    const validationError = ValidateExpense(
-      cleanTitle,
-      editedAmount,
-      editedCategory,
-    );
+    try {
+      const cleanTitle = formatTitle(editedTitle);
+      const validationError = ValidateExpense(
+        cleanTitle,
+        editedAmount,
+        editedCategory,
+      );
 
-    if (validationError) {
-      setError(validationError);
-      return;
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
+
+      const editedExpense = {
+        title: cleanTitle,
+        amount: editedAmount,
+        category: editedCategory,
+      };
+
+      const response = await updateExpenseBackend(id, editedExpense);
+
+      const updatedExpense = response.matchingExpense;
+
+      setExpenses((prev) =>
+        prev.map((expense) => (expense.id === id ? updatedExpense : expense)),
+      );
+      setEditingId(null);
+      setApiError(null);
+
+      toast("Expense Updated");
+    } catch (error) {
+      setApiError(error.message);
     }
-
-    const editedExpense = {
-      title: cleanTitle,
-      amount: editedAmount,
-      category: editedCategory,
-    };
-
-    await updateExpenseBackend(id, editedExpense);
-
-    setExpenses((prev) =>
-      prev.map((expense) =>
-        expense.id === id
-          ? {
-              ...expense,
-              title: cleanTitle,
-              amount: editedAmount,
-              category: editedCategory,
-            }
-          : expense,
-      ),
-    );
-
-    setEditingId(null);
-
-    toast("Expense Updated");
   }
 
   function HandleEditCancel() {

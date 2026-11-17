@@ -65,8 +65,14 @@ function ExpenseCard({
               <button onClick={closeModal}>Cancel</button>
 
               <button
-                onClick={() => {
-                  deleteExpense(id);
+                onClick={async () => {
+                const success =   await deleteExpense(id);
+
+                 if(success){
+
+                    closeModal()
+                 }
+                 
                 }}
               >
                 Delete
