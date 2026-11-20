@@ -16,6 +16,10 @@ function ExpenseList({
   error,
   setSortOrderValue,
   sortOrderValue,
+  isLoading,
+  apiError,
+  isUpdating,
+  deletingExpenseId,
 }) {
   const { selectedExpenseId, openModal, closeModal } = UserConfirmationModel();
   const categories = [
@@ -64,7 +68,11 @@ function ExpenseList({
         ))}
       </div>
 
-      {expenses.length > 1 && (
+      {isLoading && <div>Loading....</div>}
+
+      {!isLoading && apiError && <p className="error">{apiError}</p>}
+
+      {!isLoading && !apiError &&  expenses.length > 1 && (
         <div className="sort-container">
           <label htmlFor="sort">Sort by</label>
 
@@ -83,7 +91,7 @@ function ExpenseList({
           </select>
         </div>
       )}
-      {expenses.length === 0 && (
+      {!isLoading && !apiError && expenses.length === 0 && (
         <EmptyState
           icon={searchQuery ? <SearchX size={48} /> : <FilterX size={48} />}
           title={
@@ -121,12 +129,14 @@ function ExpenseList({
               selectedExpenseId={selectedExpenseId}
               openModal={openModal}
               closeModal={closeModal}
+              isUpdating={isUpdating}
+              deletingExpenseId={deletingExpenseId}
             />
           );
         })}
       </ul>
 
-      {expenses.length > 0 && (
+      {!isLoading && !apiError && expenses.length > 0 &&(
         <div className="pagination">
           <button onClick={handlePrev} disabled={currentPage === 1}>
             Prev

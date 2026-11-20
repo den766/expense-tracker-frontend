@@ -29,6 +29,10 @@ function App() {
   const [error, setError] = useState("");
   const [apiError, setApiError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [deletingExpenseId, setDeletingExpenseId] = useState(null);
   const [monthlyBudget, setMonthlyBudget] = useState(() => loadMonthlyBudget());
 
   useEffect(() => {
@@ -44,6 +48,8 @@ function App() {
         setApiError(null);
       } catch (error) {
         setApiError(error.message);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -78,6 +84,8 @@ function App() {
       setError("");
       setApiError(null);
 
+      setIsSubmitting(true);
+
       const createdExpense = await createExpenses(newExpense);
       setExpenses((prev) => [...prev, createdExpense.newExpense]);
 
@@ -87,12 +95,15 @@ function App() {
     } catch (error) {
       setApiError(error.message);
       return false;
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   async function HandleDeleteExpense(id) {
     try {
       setApiError(null);
+      setDeletingExpenseId(id);
 
       await deleteExpenseBackEnd(id);
 
@@ -101,7 +112,7 @@ function App() {
       return true;
     } catch (error) {
       setApiError(error.message);
-       return false;
+      return false;
     }
   }
 
@@ -134,6 +145,8 @@ function App() {
         category: editedCategory,
       };
 
+      setIsUpdating(true);
+
       const response = await updateExpenseBackend(id, editedExpense);
 
       const updatedExpense = response.matchingExpense;
@@ -147,6 +160,9 @@ function App() {
       toast("Expense Updated");
     } catch (error) {
       setApiError(error.message);
+    }{
+
+       setIsUpdating(false);
     }
   }
 
@@ -298,7 +314,11 @@ function App() {
           <Route
             path="create-expense"
             element={
-              <AddExpenseForm onHandleForm={HandleSubmit} error={error} />
+              <AddExpenseForm
+                onHandleForm={HandleSubmit}
+                error={error}
+                isSubmitting={isSubmitting}
+              />
             }
           />
           <Route
@@ -322,6 +342,10 @@ function App() {
                   error={error}
                   setSortOrderValue={setSortOrderValue}
                   sortOrderValue={sortOrderValue}
+                  isLoading={isLoading}
+                  apiError={apiError}
+                  isUpdating={isUpdating}
+                  deletingExpenseId={deletingExpenseId}
                 />
               </>
             }

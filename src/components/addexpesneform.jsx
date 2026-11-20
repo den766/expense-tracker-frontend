@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function AddExpenseForm({ onHandleForm, error }) {
+function AddExpenseForm({ onHandleForm, error, isSubmitting }) {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
@@ -55,7 +55,9 @@ function AddExpenseForm({ onHandleForm, error }) {
           <option value="entertainment">Entertainment</option>
           <option value="other">Other</option>
         </select>
-        <button type="submit">Add Expense</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Adding..." : "Add Expense"}
+        </button>
       </div>
     </form>
   );

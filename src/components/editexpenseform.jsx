@@ -8,6 +8,7 @@ function EditExpenseForm({
   onUpdateExpense,
   onCancelEdit,
   error,
+  isUpdating,
 }) {
   const [editedTitle, setEditedTitle] = useState(title);
   const [editedAmount, setEditedAmount] = useState(amount);
@@ -37,7 +38,6 @@ function EditExpenseForm({
         value={editedAmount}
         onChange={(e) => {
           setEditedAmount(Number(e.target.value));
-          
         }}
       ></input>
       <label htmlFor="category">Category:</label>
@@ -58,8 +58,8 @@ function EditExpenseForm({
       </select>
 
       <div className="edit-btn-group">
-        <button className="update-btn" type="submit">
-          Update Expense
+        <button className="update-btn" type="submit" disabled={isUpdating}>
+          {isUpdating ? "Updating..." : "Update"}
         </button>
         <button
           type="button"

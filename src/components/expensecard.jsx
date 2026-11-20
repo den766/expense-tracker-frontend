@@ -16,6 +16,8 @@ function ExpenseCard({
   selectedExpenseId,
   openModal,
   closeModal,
+  isUpdating,
+  deletingExpenseId,
 }) {
   if (editId === id) {
     return (
@@ -27,6 +29,7 @@ function ExpenseCard({
         onUpdateExpense={updateExpense}
         onCancelEdit={cancelEdit}
         error={error}
+        isUpdating={isUpdating}
       />
     );
   }
@@ -74,8 +77,10 @@ function ExpenseCard({
                  }
                  
                 }}
+
+               disabled={deletingExpenseId === id}
               >
-                Delete
+               {deletingExpenseId === id ? "Deleting...": "Delete"}
               </button>
             </div>
           </div>
